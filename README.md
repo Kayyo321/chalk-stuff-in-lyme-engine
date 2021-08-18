@@ -14,7 +14,43 @@ IF YOU MAKE A MOD AND DISTRIBUTE A MODIFIED / RECOMIPLED VERSION, YOU MUST OPEN 
 - [PhantomArcade3K](https://twitter.com/phantomarcade3k) and [Evilsk8r](https://twitter.com/evilsk8r) - Art
 - [Kawaisprite](https://twitter.com/kawaisprite) - Musician
 
+## Creater Of Lyme Engine
+
+- [KDev (Not Kade ):<)](https://www.youtube.com/channel/UCEr3KP-Kpyx_1gf-47RvNFw) - Programmer For Lyme Engine
+
+## simpin 4 Tom Fulp
+
 This game was made with love to Newgrounds and it's community. Extra love to Tom Fulp.
+
+## What Lyme Engine Has To Offer
+
+Lyme engine is built off of the base FnF engine! 
+
+Features include:
+
+- Cleaner / Harsher inputs 
+
+cleaner inputs has ghost tapping, and easier to hit notes, while harsher inputs has no ghost tapping, and anything below a sick, is a miss
+
+- A Count Down When You Unpause
+
+gf does a 3 2 1 when you hit resume in the pause menu 
+
+- Custom KeyBinds
+
+Have any KeyBinds you want! (credit to RozeBud / KadeDev for doing it, and then me stealing it)
+
+- Downscroll / Upscroll
+
+Downscroll moves the note scroll down, Upscroll moves the note scroll up
+
+- Counters For Gameplay
+
+the are several counters, which include: Faults, Score, Ghost Taps (if on cleaner inputs), and song info (go into pico on hard mode for an easter egg ;) )
+
+## how to see recent updates
+
+go to the game banana page [here](https://gamebanana.com/mods/312257) and look at the updates tab, to see all the new updates! (1.3.0 has middle scroll and some other rly cool stuff you'll like with it :D)
 
 ## Build instructions
 

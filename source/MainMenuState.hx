@@ -22,6 +22,7 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
+
 	var curSelected:Int = 0;
 
 	var curTween:FlxTween;
@@ -38,12 +39,19 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
+	var settings:Controls;
+
 	var curDifficulty:Int = 1;
 
 	var pos:FlxText;
 
 	override function create()
 	{
+
+		Saves.Menu = FlxG.save.data.menu;
+
+		resetKeys();
+
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
@@ -79,9 +87,15 @@ class MainMenuState extends MusicBeatState
 		magenta.screenCenter();
 		magenta.visible = false;
 		magenta.antialiasing = true;
-		magenta.color = 0xDf232ffD;
+		magenta.color = 0xFFfd719b;
 		add(magenta);
 		// magenta.scrollFactor.set();
+
+		var black:FlxSprite = new FlxSprite(0, FlxG.height / 2 - 15).makeGraphic(FlxG.width * 2, 125, FlxColor.BLACK);
+		black.scrollFactor.set();
+		black.alpha -= 0.35;
+		if (Saves.Menu)
+			add(black);	
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -90,17 +104,43 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...optionShit.length)
 		{
-			menuItem = new FlxSprite(120, 150 + (i * 160));
-			menuItem.frames = tex;
-			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
-			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
-			menuItem.animation.play('idle');
-			menuItem.ID = i;
-			// menuItem.x = 107;
-			// menuItem.y = 446;
-			menuItems.add(menuItem);
-			menuItem.scrollFactor.set();
-			menuItem.antialiasing = true;
+			if (!Saves.Menu)
+			{
+				menuItem = new FlxSprite(120, 150 + (i * 160));
+				menuItem.frames = tex;
+				menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
+				menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+				menuItem.animation.play('idle');
+				menuItem.ID = i;
+				menuItems.add(menuItem);
+				menuItem.scrollFactor.set();
+				menuItem.antialiasing = true;
+			}
+			else 
+			{
+				bg.y -= 25;
+				magenta.y -= 25;
+				
+				var menuItem:FlxSprite = new FlxSprite(0, 0);
+				menuItem.frames = tex;
+				menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
+				menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+				menuItem.animation.play('idle');
+				menuItem.ID = i;
+				menuItems.add(menuItem);
+				menuItem.scrollFactor.set(0, 1);
+				menuItem.antialiasing = true;
+				if(i == 0){
+					menuItem.setGraphicSize(Std.int(menuItem.width * 0.78));
+					menuItem.alpha = 1;
+				}
+				else{
+					menuItem.setGraphicSize(Std.int(menuItem.width * 0.68));
+					menuItem.alpha = 0.8;
+				}
+				menuItem.x = 4 + (i * 450);
+				menuItem.y -= 300;
+			}
 		}
 
 		FlxG.camera.follow(camFollow, null, 0.06);
@@ -117,6 +157,15 @@ class MainMenuState extends MusicBeatState
 		super.create();
 	}
 
+	function resetKeys()
+	{
+
+		PlayerSettings.player1.controls.loadKeyBinds();
+
+		// the game forgets???
+		// idfk	
+	}
+
 	var selectedSomethin:Bool = false;
 
 	override function update(elapsed:Float)
@@ -126,24 +175,50 @@ class MainMenuState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
+		
+
+
 		if (!selectedSomethin)
 		{
-			if (controls.UP_P)
+			if (Saves.Menu) //FlxG.keys.justPressed.RIGHT
 			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(-1);
+				if (FlxG.keys.justPressed.LEFT)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(-1);
+				}
+
+				if (FlxG.keys.justPressed.RIGHT)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(1);
+				}
+
+				if (controls.BACK)
+				{
+					FlxG.switchState(new TitleState());
+				}	
+			}
+			else 
+			{
+				if (controls.UP_P)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(-1);
+				}
+
+				if (controls.DOWN_P)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(1);
+				}
+
+				if (controls.BACK)
+				{
+					FlxG.switchState(new TitleState());
+				}
 			}
 
-			if (controls.DOWN_P)
-			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(1);
-			}
-
-			if (controls.BACK)
-			{
-				FlxG.switchState(new TitleState());
-			}
 
 			if (controls.ACCEPT)
 			{
@@ -166,7 +241,7 @@ class MainMenuState extends MusicBeatState
 					{
 						if (curSelected != spr.ID)
 						{
-							FlxTween.tween(spr, {alpha: 0, x: spr.x - 50}, 0.4, {
+							FlxTween.tween(spr, {alpha: 0}, 0.4, {
 								ease: FlxEase.quadOut,
 								onComplete: function(twn:FlxTween)
 								{
@@ -221,32 +296,11 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
-				//curTween = FlxTween.tween(spr, {x: spr.x + 50}, 1, {ease: FlxEase.circOut, type: PINGPONG});
+				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.y);
+				spr.alpha = 1;
 			}
 			spr.updateHitbox();
+
 		});
 	}
 }
-
-// if (FlxG.keys.pressed.H)
-// 	{
-// 		spr.x--;
-// 	}
-// 	else if (FlxG.keys.pressed.J)
-// 	{
-// 		spr.x++;
-// 	}
-
-// 	if (FlxG.keys.pressed.K)
-// 	{
-// 		spr.y--;
-// 	}
-// 	else if (FlxG.keys.pressed.L)
-// 	{
-// 		spr.y++;
-// 	}
-
-// 	trace(spr.x + " - " + spr.y);
-
-	// garbage position shiz, but it works :/

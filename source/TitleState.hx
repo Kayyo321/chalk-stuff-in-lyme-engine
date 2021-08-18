@@ -40,6 +40,8 @@ class TitleState extends MusicBeatState
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
 
+	var noInput:Bool = true;
+
 	var curWacky:Array<String> = [];
 
 	var wackyImage:FlxSprite;
@@ -141,6 +143,9 @@ class TitleState extends MusicBeatState
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		// bg.antialiasing = true;
+		// bg.setGraphicSize(Std.int(bg.width * 0.6));
+		// bg.updateHitbox();
 		add(bg);
 
 		logoBl = new FlxSprite(25, 25).loadGraphic(Paths.image('titleThingy'));
@@ -155,7 +160,6 @@ class TitleState extends MusicBeatState
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 		gfDance.antialiasing = true;
-		gfDance.alpha = 0.6;
 		add(gfDance);
 		add(logoBl);
 
@@ -234,9 +238,10 @@ class TitleState extends MusicBeatState
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
-		if (FlxG.keys.justPressed.F)
-		{
-			FlxG.fullscreen = !FlxG.fullscreen;
+		if (FlxG.keys.justPressed.F && !noInput)
+		{	
+			if (FlxG.fullscreen)
+				FlxG.fullscreen = !FlxG.fullscreen;
 		}
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
@@ -264,7 +269,7 @@ class TitleState extends MusicBeatState
 			#end
 		}
 
-		if (pressedEnter && !transitioning && skippedIntro)
+		if (pressedEnter && !transitioning && skippedIntro && !noInput)
 		{
 			#if !switch
 			NGio.unlockMedal(60960);
@@ -307,7 +312,7 @@ class TitleState extends MusicBeatState
 			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 		}
 
-		if (pressedEnter && !skippedIntro)
+		if (pressedEnter && !skippedIntro && !noInput)
 		{
 			skipIntro();
 		}
@@ -363,6 +368,7 @@ class TitleState extends MusicBeatState
 		{
 			case 1:
 				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+				noInput = false;
 			// credTextShit.visible = true;
 			case 3:
 				addMoreText('present');
@@ -418,10 +424,20 @@ class TitleState extends MusicBeatState
 		if (!skippedIntro)
 		{
 			remove(ngSpr);
-
-			FlxG.camera.flash(FlxColor.WHITE, 4);
 			remove(credGroup);
-			skippedIntro = true;
+
+			logoBl.y -= 100;
+			gfDance.x += 100;
+
+			FlxTween.tween(logoBl, {y: logoBl.y + 100}, 0.75, {
+				onComplete: function(tween:FlxTween)
+				{
+					FlxG.camera.flash(FlxColor.WHITE, 4);
+					skippedIntro = true;
+				}
+			});
+
+			FlxTween.tween(gfDance, {x: gfDance.x - 100}, 0.75);
 		}
 	}
 }

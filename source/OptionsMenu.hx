@@ -27,12 +27,30 @@ class OptionsMenu extends MusicBeatState
 		new OptionCategory("Gameplay", [
 			new DFJKOption(controls),
 			new DownscrollOption("change position of strum line"),
-			new GhostTapOption("Cleaner Inputs: ghost tapping, better timing window, Harsher inputs: no ghost tapping, harsher timing window")
+			new GhostTapOption("Cleaner Inputs: ghost tapping, better timing window, Harsher inputs: no ghost tapping, harsher timing window"),
+			new MiddleScroll("put the strum line in the middle"),
+			new Hitsound("Play a snap noise whenever you press a button in game")
 		]),
 		new OptionCategory("Visual", [
 			new Counters("See the counters in game?"),
+			new CountersAlpha("Change the transparancy of the counters in game"),
 			new NoteEffects("Show note effects at begining of song"),
-			new SusNoteEffects("Show sustain note effects on a sustain note")
+			new StepMainia("Use The Note Skins From Step Mainia"),
+			new MiddleScrollBox("change the transparancy of the black box on middle scroll! (0 = not there)"),
+			#if desktop
+				new FPSCapOption("cap your fps at your repective limit")
+			#end
+		]),
+		new OptionCategory("Other", [
+			new BlueNotes("make all scrolling notes darker"),
+			new Icons("show health icons on healthbar"),
+			new Bar("show health bar"), 
+			new CoolMenu("Toggle A New Menu Layout!")
+			// new BotPlay("have a bot play all your notes for you") fix dis when you got the mental stability XD
+		]),
+		new OptionCategory("Lyme Engine Links", [
+			new GoToGit("goes to lyme engine's github repository"),
+			new GoToBanana("goes to lyme engine's game banana page")
 		])
 	];
 
@@ -62,7 +80,7 @@ class OptionsMenu extends MusicBeatState
 		for (i in 0...options.length)
 		{
 			var controlLabel:Alphabet = new Alphabet(0.5, (70 * i) + 30, options[i].getName(), true, false);
-			controlLabel.screenCenter(X);
+			controlLabel.screenCenter();
 			controlLabel.isMenuItem = true;
 			controlLabel.targetY = i;
 			grpControls.add(controlLabel);

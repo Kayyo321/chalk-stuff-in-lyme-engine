@@ -18,7 +18,7 @@ class HealthIcon extends FlxSprite
 
 		// global 
 
-		animation.add('bf', [0, 1, 32], 0, false, isPlayer);
+		animation.add('bf', [0, 1], 0, false, isPlayer);
 	  //------------------------------------------------	
 		animation.add('face', [10, 11], 0, false, isPlayer);
 	  //----------------------------------------------------
